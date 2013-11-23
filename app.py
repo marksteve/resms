@@ -130,7 +130,7 @@ def dashboard_send():
   sender = str(app["shortcode"])[-4:]
   if users:
     for user in users:
-      access_token = get_user_token(user)
+      access_token = get_user_token(g.app_id, user)
       payload = json.dumps(dict(
           outboundSMSMessageRequest=dict(
           clientCorrelator=simpleflake(),
