@@ -130,6 +130,10 @@ def dashboard_send():
   survey = get_survey(g.app_id, survey_id)
   users = get_users(g.app_id)
   sender = str(app["shortcode"])[-4:]
+  message = "%s\nChoices:%s" % (
+    survey["question"],
+    "/".join(get_choices(g.app_id, survey_id)),
+  )
   if users:
     for user in users:
       access_token = get_user_token(g.app_id, user)
@@ -137,7 +141,9 @@ def dashboard_send():
           outboundSMSMessageRequest=dict(
           clientCorrelator=simpleflake(),
           senderAddress="tel:%s" % sender,
-          outboundSMSTextMessage=survey["questions"],
+          outboundSMSTextMessage=dict(
+            message=message,
+          ),
           address="+63%s" % user,
         ),
       ))
