@@ -137,6 +137,7 @@ def dashboard_send():
   if users:
     for user in users:
       access_token = get_user_token(g.app_id, user)
+      params = dict(access_token=access_token)
       payload = json.dumps(dict(
           outboundSMSMessageRequest=dict(
           clientCorrelator=simpleflake(),
@@ -147,15 +148,16 @@ def dashboard_send():
           address="+63%s" % user,
         ),
       ))
-      print resp.status
-      print resp.content
       print payload
+      print params
       resp = requests.post(
         "http://devapi.globelabs.com.ph/smsmessaging/v1/outbound/%s/requests" % sender,
         headers={"Content-Type": "application/json"},
-        params=dict(access_token=access_token),
+        params=params,
         data=payload,
       )
+      print resp.status
+      print resp.content
     flash("Sent survey to %d users" % len(users), "info")
   else:
     flash("No users subscribed yet", "error")
