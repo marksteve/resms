@@ -145,7 +145,7 @@ def dashboard_send():
           outboundSMSTextMessage=dict(
             message=message,
           ),
-          address="+63%s" % user,
+          address=["tel:+63%s" % user],
         ),
       ))
       print payload
@@ -156,7 +156,7 @@ def dashboard_send():
         params=params,
         data=payload,
       )
-      print resp.status
+      print resp.status_code
       print resp.content
     flash("Sent survey to %d users" % len(users), "info")
   else:
