@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="row">
+  <div class="large-4 columns">
+    <h1>ReSMS</h1>
+    <h2>App</h2>
+    <h3>Email</h3>
+    <p>{{ app.email }}</p>
+    <h3>Shortcode</h3>
+    <p>{{ app.shortcode }}</p>
+    <h3>Notify URI</h3>
+    <p>{{ url_for("receive", app_id=app.id, _external=True) }}</p>
+    <h3>Redirect URI</h3>
+    <p>{{ url_for("subscribe", app_id=app.id, _external=True) }}</p>
+    <h2>Users</h2>
+    <ul>
+    {% for num in users %}
+      <li>{{ num }}</li>
+    {% endfor %}
+    </ul>
+  </div>
+</div>
+
+{% endblock %}
