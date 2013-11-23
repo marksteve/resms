@@ -75,9 +75,21 @@ def get_survey(app_id, survey_id):
   survey = db.hgetall(key("surveys", app_id, survey_id))
   if survey:
     choices = get_choices(app_id, survey_id)
+    responses = dict()
     if choices:
-      value = int(1.0 / len(choices) * 100)
-      survey.update(choices=[(value, choice) for choice in choices])
+      total = 0
+      for choice in choices:
+        value = int(db.get(key("responses", app_id, survey_id, choice)) or 0)
+        if value > 0:
+          responses[choice] = value
+          total += value
+      if total > 0:
+        for choice, value in responses.items():
+          responses[choice] = (value, int(100.0 * value / total))
+    survey.update(
+      total=total,
+      responses=responses,
+    )
   return survey
 
 
@@ -113,8 +125,7 @@ def register():
 def dashboard():
   app = get_app(g.app_id)
   users = get_users(g.app_id)
-  survey = get_curr_survey(g.app_id)
-  return render_template(
+  survey = get_curr_survey(g.app_id) return render_template(
     "dashboard.html",
     app=app,
     users=users,
@@ -173,6 +184,17 @@ def subscribe(app_id):
 
 @fl.route("/receive/<app_id>", methods=["POST"])
 def receive(app_id):
+  survey = get_curr_survey(app_id)
+  choices = get_choices(app_id, survey["id"])
+  for m in request.json["inboundSMSMessageList"]["inboundSMSMessage"]:
+    choice = m["message"].strip().upper()
+    if choice not in choices:
+      # FIXME: Send an sms error message
+      abort(400)
+    # TODO: Check if user
+    # FIXME: Don't allow dupe responses
+    db.incr(key("responses", app_id, survey["id"], choice))
+    break
   return ""
 
 
