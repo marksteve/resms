@@ -130,7 +130,7 @@ def dashboard_send():
   survey = get_survey(g.app_id, survey_id)
   users = get_users(g.app_id)
   sender = str(app["shortcode"])[-4:]
-  message = "%s\nChoices:%s" % (
+  message = "%s\nREPLY WITH %s" % (
     survey["question"],
     "/".join(get_choices(g.app_id, survey_id)),
   )
@@ -148,16 +148,12 @@ def dashboard_send():
           address=["tel:+63%s" % user],
         ),
       ))
-      print payload
-      print params
       resp = requests.post(
         "http://devapi.globelabs.com.ph/smsmessaging/v1/outbound/%s/requests" % sender,
         headers={"Content-Type": "application/json"},
         params=params,
         data=payload,
       )
-      print resp.status_code
-      print resp.content
     flash("Sent survey to %d users" % len(users), "info")
   else:
     flash("No users subscribed yet", "error")
