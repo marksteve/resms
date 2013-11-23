@@ -12,7 +12,9 @@ from flask import (
 )
 from flask_redisconfig import RedisConfig
 from simpleflake import simpleflake
+import json
 import redis
+import requests
 import sys
 
 
@@ -45,8 +47,11 @@ def get_users(app_id):
   return db.smembers(key("users", app_id))
 
 
-def create_survey():
-  app_id = session["app_id"]
+def get_user_token(app_id, user_id):
+  return db.get(key("users", app_id, user_id))
+
+
+def create_survey(app_id):
   survey_id = simpleflake()
   question = request.form["question"].strip()
   choices = map(lambda s: s.strip().upper(), request.form["choices"].strip().split("\n"))
@@ -105,10 +110,9 @@ def register():
 @fl.route("/dashboard", methods=["GET", "POST"])
 @sess_required
 def dashboard():
-  app_id = session["app_id"]
-  app = get_app(app_id)
-  users = get_users(app_id)
-  survey = get_curr_survey(app_id)
+  app = get_app(g.app_id)
+  users = get_users(g.app_id)
+  survey = get_curr_survey(g.app_id)
   return render_template(
     "dashboard.html",
     app=app,
@@ -120,8 +124,31 @@ def dashboard():
 @fl.route("/dashboard/send", methods=["POST"])
 @sess_required
 def dashboard_send():
-  survey_id = create_survey()
-  flash("Sent survey to %d users" % 1000, "info")
+  app = get_app(g.app_id)
+  survey_id = create_survey(g.app_id)
+  users = get_users(g.app_id)
+  sender = str(app["shortcode"])[-4:]
+  if users:
+    for user in users:
+      access_token = get_user_token(user)
+      payload = json.dumps(dict(
+          outboundSMSMessageRequest=dict(
+          clientCorrelator=simpleflake(),
+          senderAddress="tel:%s" % sender,
+          outboundSMSTextMessage=survey["questions"],
+          address="+63%s" % user,
+        ),
+      ))
+      print payload
+      resp = requests.post(
+        "http://devapi.globelabs.com.ph/smsmessaging/v1/outbound/%s/requests" % sender,
+        headers={"Content-Type": "application/json"},
+        params=dict(access_token=access_token),
+        data=payload,
+      )
+    flash("Sent survey to %d users" % len(users), "info")
+  else:
+    flash("No users subscribed yet", "error")
   return redirect(url_for("dashboard"))
 
 
