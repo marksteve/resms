@@ -5,16 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ReSMS</title>
     <link rel="stylesheet" href="/static/css/foundation.css" />
+    <link rel="stylesheet" href="/static/css/pizza.css" />
+    <link rel="stylesheet" href="/static/css/app.css" />
     <script src="/static/js/modernizr.js"></script>
   </head>
   <body>
-
+    <div class="app">
     {% block content %}{% endblock %}
-
+    </div>
     <script src="/static/js/jquery.js"></script>
     <script src="/static/js/foundation.min.js"></script>
+    <script src="/static/js/vendor/snap.svg.js"></script>
+    <script src="/static/js/pizza.js"></script>
     <script>
       $(document).foundation();
+      Pizza.init();
     </script>
   </body>
 </html>

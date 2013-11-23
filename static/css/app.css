@@ -1,0 +1,23 @@
+.app {
+  margin: 3em 0;
+}
+
+h2 {
+  padding-bottom: 0.2em;
+  margin-bottom: 0.8em;
+  border-bottom: 1px solid;
+}
+
+section {
+  background: #f9f9f9;
+  padding: 1em 1.5em;
+  margin-bottom: 1.5em;
+}
+
+textarea {
+  height: 5em;
+}
+
+#responses {
+  margin-top: -3em;
+}

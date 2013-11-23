@@ -1,4 +1,5 @@
 Flask
 Flask-RedisConfig
 redis
+requests
 simpleflake

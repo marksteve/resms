@@ -1,11 +1,14 @@
+from functools import wraps
 from flask import (
   Flask,
+  abort,
+  flash,
+  g,
+  redirect,
   render_template,
   request,
   session,
-  redirect,
   url_for,
-  abort,
 )
 from flask_redisconfig import RedisConfig
 from simpleflake import simpleflake
@@ -25,7 +28,8 @@ def key(*a):
 
 def create_app():
   app_id = simpleflake()
-  db.hmset(app_id, dict(
+  # Store app
+  db.hmset(key("apps", app_id), dict(
     id=app_id,
     email=request.form["email"].strip().lower(),
     shortcode=int(request.form["shortcode"].strip()),
@@ -34,11 +38,57 @@ def create_app():
 
 
 def get_app(app_id):
-  return db.hgetall(app_id)
+  return db.hgetall(key("apps", app_id))
 
 
 def get_users(app_id):
   return db.smembers(key("users", app_id))
+
+
+def create_survey():
+  app_id = session["app_id"]
+  survey_id = simpleflake()
+  question = request.form["question"].strip()
+  choices = map(lambda s: s.strip().upper(), request.form["choices"].strip().split("\n"))
+  # Store survey
+  db.hmset(key("surveys", app_id, survey_id), dict(
+    id=survey_id,
+    question=question,
+  )),
+  # Add choices
+  db.sadd(key("choices", app_id, survey_id), *choices)
+  # Set current survey
+  db.set(key("curr_survey", app_id), survey_id)
+
+
+def get_choices(app_id, survey_id):
+  return db.smembers(key("choices", app_id, survey_id))
+
+
+def get_survey(app_id, survey_id):
+  survey = db.hgetall(key("surveys", app_id, survey_id))
+  if survey:
+    choices = get_choices(app_id, survey_id)
+    if choices:
+      value = round(1.0 / len(choices) * 100, 2)
+      survey.update(choices=[(value, choice) for choice in choices])
+  return survey
+
+
+def get_curr_survey(app_id):
+  survey_id = db.get(key("curr_survey", app_id))
+  if survey_id:
+    return get_survey(app_id, survey_id)
+
+
+def sess_required(f):
+  @wraps(f)
+  def decorated(*args, **kwargs):
+    if "app_id" not in session:
+      abort(401)
+    g.app_id = session["app_id"]
+    return f(*args, **kwargs)
+  return decorated
 
 
 @fl.route("/")
@@ -53,24 +103,35 @@ def register():
 
 
 @fl.route("/dashboard", methods=["GET", "POST"])
+@sess_required
 def dashboard():
-  if "app_id" not in session:
-    abort(401)
   app_id = session["app_id"]
   app = get_app(app_id)
   users = get_users(app_id)
+  survey = get_curr_survey(app_id)
   return render_template(
     "dashboard.html",
     app=app,
     users=users,
+    survey=survey,
   )
+
+
+@fl.route("/dashboard/send", methods=["POST"])
+@sess_required
+def dashboard_send():
+  survey_id = create_survey()
+  flash("Sent survey to %d users" % 1000, "info")
+  return redirect(url_for("dashboard"))
 
 
 @fl.route("/subscribe/<app_id>", methods=["GET"])
 def subscribe(app_id):
   u = request.args["subscriber_number"]
   k = key("users", app_id, u)
+  # Set user access token
   db.set(k, request.args["access_token"])
+  # Add to app's users list
   db.sadd(key("users", app_id), u)
   return ""
 

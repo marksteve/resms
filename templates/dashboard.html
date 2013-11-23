@@ -2,24 +2,90 @@
 
 {% block content %}
 
+
 <div class="row">
-  <div class="large-4 columns">
+  <div class="large-8 columns">
     <h1>ReSMS</h1>
-    <h2>App</h2>
-    <h3>Email</h3>
-    <p>{{ app.email }}</p>
-    <h3>Shortcode</h3>
-    <p>{{ app.shortcode }}</p>
-    <h3>Notify URI</h3>
-    <p>{{ url_for("receive", app_id=app.id, _external=True) }}</p>
-    <h3>Redirect URI</h3>
-    <p>{{ url_for("subscribe", app_id=app.id, _external=True) }}</p>
-    <h2>Users</h2>
-    <ul>
-    {% for num in users %}
-      <li>{{ num }}</li>
+  </div>
+  <div class="large-4 columns">
+    {% for category, message in get_flashed_messages(with_categories=true) %}
+    <div class="alert-box {{ category }}">
+      {{ message }}
+      <a href="#" class="close">&times;</a>
+    </div>
     {% endfor %}
-    </ul>
+  </div>
+</div>
+
+<div class="row">
+  <div class="large-6 columns">
+    <section>
+      <h2>App</h2>
+      <h3>Email</h3>
+      <p>{{ app.email }}</p>
+      <h3>Shortcode</h3>
+      <p>{{ app.shortcode }}</p>
+      <h3>Notify URI</h3>
+      <p>{{ url_for("receive", app_id=app.id, _external=True) }}</p>
+      <h3>Redirect URI</h3>
+      <p>{{ url_for("subscribe", app_id=app.id, _external=True) }}</p>
+    </section>
+  </div>
+  <div class="large-6 columns">
+    <section>
+      <h2>Users</h2>
+      <ul>
+      {% for num in users %}
+        <li>{{ num }}</li>
+      {% else %}
+        <li>No users subscribed yet</li>
+      {% endfor %}
+      </ul>
+    </section>
+  </div>
+</div>
+{% if survey %}
+<div class="row">
+  <div class="large-12 columns">
+    <section>
+      <h2>Current Survey</h2>
+      <div class="row">
+        <div class="large-4 columns">
+          <h3>Question</h3>
+          <p>{{ survey.question }}</p>
+        </div>
+        <div class="large-8 columns">
+          <h3>Responses</h3>
+          <div class="row">
+            <div class="large-4 columns">
+              <ul data-pie-id="responses" class="no-bullet">
+              {% for value, choice in survey.choices %}
+                <li data-value="{{ value }}">{{ choice }} - {{ value }}%</li>
+              {% endfor %}
+              </ul>
+            </div>
+            <div class="large-8 columns">
+              <div id="responses"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+{% endif %}
+<div class="row">
+  <div class="large-6 columns">
+    <section>
+      <form action="/dashboard/send" method="post">
+        <h2>Send a New Survey</h2>
+        <h3>Question</h3>
+        <p><textarea name="question" placeholder="Question"></textarea></p>
+        <h3>Choices</h3>
+        <p><textarea name="choices" placeholder="Choices (one line each)"></textarea></p>
+        <p><button type="submit" class="small">Send</button></p>
+      </form>
+    </section>
   </div>
 </div>
 
