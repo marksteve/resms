@@ -76,7 +76,7 @@ def get_survey(app_id, survey_id):
   if survey:
     choices = get_choices(app_id, survey_id)
     if choices:
-      value = round(1.0 / len(choices) * 100, 2)
+      value = int(1.0 / len(choices) * 100)
       survey.update(choices=[(value, choice) for choice in choices])
   return survey
 
