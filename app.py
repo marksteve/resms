@@ -70,8 +70,6 @@ def dashboard():
 def subscribe(app_id):
   u = request.args["subscriber_number"]
   k = key("users", app_id, u)
-  if not db.exists(k):
-    abort(400)
   db.set(k, request.args["access_token"])
   db.sadd(key("users", app_id), u)
   return ""
