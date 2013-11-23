@@ -88,7 +88,7 @@ def get_survey(app_id, survey_id):
           responses[choice] = (value, int(100.0 * value / total))
     survey.update(
       total=total,
-      responses=responses,
+      responses=sorted(responses.items(), lambda x: x[1][1]),
     )
   return survey
 

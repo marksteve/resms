@@ -57,7 +57,7 @@
           <div class="row">
             <div class="large-4 columns">
               <ul data-pie-id="responses" class="no-bullet">
-              {% for choice, value in sorted(survey.responses.items(), key=lambda x: x[1][1]) %}
+              {% for choice, value in survey.responses %}
                 <li data-value="{{ value[1] }}">{{ choice }} - {{ value[0] }} ({{ value[1] }}%)</li>
               {% endfor %}
               </ul>
