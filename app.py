@@ -147,6 +147,8 @@ def dashboard_send():
           address="+63%s" % user,
         ),
       ))
+      print resp.status
+      print resp.content
       print payload
       resp = requests.post(
         "http://devapi.globelabs.com.ph/smsmessaging/v1/outbound/%s/requests" % sender,
