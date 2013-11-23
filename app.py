@@ -125,7 +125,8 @@ def register():
 def dashboard():
   app = get_app(g.app_id)
   users = get_users(g.app_id)
-  survey = get_curr_survey(g.app_id) return render_template(
+  survey = get_curr_survey(g.app_id)
+  return render_template(
     "dashboard.html",
     app=app,
     users=users,
