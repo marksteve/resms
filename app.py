@@ -64,6 +64,7 @@ def create_survey(app_id):
   db.sadd(key("choices", app_id, survey_id), *choices)
   # Set current survey
   db.set(key("curr_survey", app_id), survey_id)
+  return survey_id
 
 
 def get_choices(app_id, survey_id):
@@ -126,6 +127,7 @@ def dashboard():
 def dashboard_send():
   app = get_app(g.app_id)
   survey_id = create_survey(g.app_id)
+  survey = get_survey(g.app_id, survey_id)
   users = get_users(g.app_id)
   sender = str(app["shortcode"])[-4:]
   if users:
