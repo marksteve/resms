@@ -5,16 +5,59 @@
 <div class="row">
   <div class="large-4 columns">
     <section>
-      <h1>ReSMS</h1>
       <p>
-        Tagline here sir.
+        Start getting customer feedback through SMS. Now.
       </p>
       <form action="/register" method="post">
         <p><input name="email" type="text" placeholder="Email"></p>
-        <p><input name="shortcode" type="text" placeholder="Shortcode"></p>
-        <p><button type="submit" class="small">Register</button</p>
+        <p><input name="shortcode" type="text" placeholder="App Shortcode"></p>
+        <p><button type="submit" class="small">Get Started</button></p>
+        <p>
+          <a href="#" data-reveal-id="shortcode">
+            What is my app shortcode?
+          </a>
+        </p>
       </form>
     </section>
+  </div>
+</div>
+
+<div id="shortcode" class="small reveal-modal" data-reveal>
+  <p>You can find your app shortcode in your app details page.</p>
+  <p><img src="/static/img/shortcode.png"></p>
+  <a class="close-reveal-modal">&times;</a>
+</div>
+
+<div class="features">
+  <div class="row">
+    <div class="large-12 columns">
+      <ul class="large-block-grid-3 text-center">
+        <li>
+          <p><img src="/static/img/globe.png"></p>
+          <h3>Powered by Globe</h3>
+          <p>
+            Harness the power of Globe's SMS API without having
+            to write a single line of code.
+          </p>
+        </li>
+        <li>
+          <p><i class="fi-like"></i></p>
+          <h3>Dead Simple</h3>
+          <p>
+            Software was made to make our lives easier.
+            We tried to keep that in mind.
+          </p>
+        </li>
+        <li>
+          <p><i class="fi-dollar-bill"></i></p>
+          <h3>Fair Pricing</h3>
+          <p>
+            Same with Globe's API pricing, only pay as you need.
+            No hidden charges.
+          </p>
+        </li>
+      </ul>
+    </div>
   </div>
 </div>
 

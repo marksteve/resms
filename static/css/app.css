@@ -2,6 +2,11 @@
   margin: 3em 0;
 }
 
+h1 {
+  font-family: Syncopate;
+  font-weight: bold;
+}
+
 h2 {
   padding-bottom: 0.2em;
   margin-bottom: 0.8em;
@@ -16,6 +21,24 @@ section {
 
 textarea {
   height: 5em;
+}
+
+.features {
+  margin-top: 6em;
+}
+
+.features i {
+  font-size: 42px;
+  line-height: 1;
+  margin: 0;
+}
+
+.features i.fi-like {
+  color: #99b;
+}
+
+.features i.fi-dollar-bill {
+  color: #9fb;
 }
 
 #responses {

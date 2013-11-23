@@ -117,6 +117,11 @@ def index():
 @fl.route("/register", methods=["POST"])
 def register():
   session['app_id'] = create_app()
+  flash(
+    "You're almost done! Just update your app's Notify and "
+    "Redirect URIs with the ones below and you're ready to go.",
+    "info",
+  )
   return redirect(url_for("dashboard"))
 
 
@@ -160,7 +165,8 @@ def dashboard_send():
           address=["tel:+63%s" % user],
         ),
       ))
-      resp = requests.post(
+      # TODO: Check response
+      requests.post(
         "http://devapi.globelabs.com.ph/smsmessaging/v1/outbound/%s/requests" % sender,
         headers={"Content-Type": "application/json"},
         params=params,
