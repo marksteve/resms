@@ -66,7 +66,7 @@ def dashboard():
   )
 
 
-@fl.route("/subscribe/<app_id>", methods=["POST"])
+@fl.route("/subscribe/<app_id>", methods=["GET"])
 def subscribe(app_id):
   u = request.json["subscriber_number"]
   k = key("users", app_id, u)
