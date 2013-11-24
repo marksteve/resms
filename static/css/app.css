@@ -30,7 +30,7 @@
   background-repeat: no-repeat;
   width: 200%;
   height: 100%;
-  -webkit-animation: slide 5s infinite;
+  -webkit-animation: slide 10s infinite;
 }
 
 h1 {
