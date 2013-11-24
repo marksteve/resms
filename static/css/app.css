@@ -2,6 +2,37 @@
   margin: 3em 0;
 }
 
+.splash {
+  background: url(../img/iphone.png) no-repeat top right;
+  padding-bottom: 54em;
+  position: relative;
+}
+
+.iphone {
+  position: absolute;
+  width: 480px;
+  height: 852px;
+  top: 180px;
+  right: 78px;
+  overflow: hidden;
+}
+
+@-webkit-keyframes slide {
+  0% { -webkit-transform: translateX(0px) }
+  45% { -webkit-transform: translateX(0px) }
+  50% { -webkit-transform: translateX(-480px) }
+  95% { -webkit-transform: translateX(-480px) }
+}
+
+.screen {
+  background-image: url(../img/sms.png), url(../img/survey.png);
+  background-position: left center, 100% center;
+  background-repeat: no-repeat;
+  width: 200%;
+  height: 100%;
+  -webkit-animation: slide 5s infinite;
+}
+
 h1 {
   font-family: Syncopate;
   font-weight: bold;
